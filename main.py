@@ -32,9 +32,9 @@ def send_welcome(message):
     if not isinstance(us, User):
         user = User(username)
         users.add_user(user)
-        bot.reply_to(message, "Привет, твой аккаунт добавлен в нашу систему!)")
+        bot.reply_to(message, "Аккаунт добавлен в систему. Теперь нужен токен. Отправляй в формате /set_token [токен]")
     else:
-        bot.reply_to(message, "Привет, этот аккаунт у нас уже есть ;)")
+        bot.reply_to(message, "Ты уже добавлен. Если задал токен, можешь управлять сервером. Если нет, задавай в формате /set_token [токен].")
         activate(message)
 
 
@@ -57,7 +57,7 @@ def set_token(message):
             bot.send_message(message.chat.id, "Токен задан")
             users.file_save()
     else:
-        bot.send_message(message.chat.id, "Не валидный токен, попробуй еще раз")
+        bot.send_message(message.chat.id, "Невалидный токен")
 
     activate(message)
 
@@ -72,10 +72,10 @@ def set_server_id(message):
         if isinstance(us, User):
             us.set_server_id(server_id)
             users.update_user(us)
-            bot.send_message(message.chat.id, "Сервер id задан")
+            bot.send_message(message.chat.id, "ID сервера задан")
             users.file_save()
     else:
-        bot.send_message(message.chat.id, "Сервер id не задан, попробуй еще раз")
+        bot.send_message(message.chat.id, "Неправильный ID сервера")
 
     activate(message)
 
@@ -110,7 +110,7 @@ def echo_all(message):
         
             return
     
-    bot.reply_to(message, f"Извини {user_first_name}, но такого я не заню :с")
+    bot.reply_to(message, f"{user_first_name}, ты вообще кто?")
 
 
 def activate(message):
