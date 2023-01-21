@@ -75,10 +75,3 @@ class exa_api:
         print( "Restart server" ) 
         self.mode_server('restart');
 
-
-
-
-# server_start()
-# server_stop()
-# server_restart()
-# print( "Status: " + get_status() )

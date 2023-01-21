@@ -104,7 +104,7 @@ def echo_all(message):
                     bot.send_message(message.chat.id, "Сервер перезапущен")
                 elif stringList[0] == 'Статус':
                     out_command = exa.get_status()
-                    bot.send_message(message.chat.id, "Статус сервер: " + out_command)
+                    bot.send_message(message.chat.id, "Статус сервера: " + out_command)
                 # elif stringList[0] == 'Логи':
                     # exa.
         
@@ -124,9 +124,11 @@ def activate(message):
             stop = types.KeyboardButton('Стоп')
             reboot = types.KeyboardButton('Рестарт')
             status = types.KeyboardButton('Статус')
-            log = types.KeyboardButton('Логи')
+            # log_ser = types.KeyboardButton('Логи сервер')
+            # log_other = types.KeyboardButton('Логи окружния')
             markup.row(start, stop)
-            markup.row(reboot, status, log)
+            markup.row(reboot, status)
+            # markup.row(reboot, status, log)
             bot.send_message(message.chat.id, "Все данные заполнены, теперь можно управлять", reply_markup=markup)
 
     
