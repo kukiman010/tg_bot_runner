@@ -15,7 +15,6 @@ class User:
         self.token = token
         if len(self.token) > 3 and len(self.server_id) > 3 :
             self.valid = True
-            # print( "tg_user: valid is true")
         else:
             self.valid = False
 
@@ -23,7 +22,6 @@ class User:
         self.server_id = server_id
         if len(self.token) > 3 and len(self.server_id) > 3 :
             self.valid = True
-            # print( "tg_user: valid is true")
         else:
             self.valid = False
 
@@ -43,3 +41,4 @@ class User:
 
     def create_line(self):
         return self.username + " " + self.token + " " + self.server_id
+

@@ -1,5 +1,6 @@
 import os
 import telebot
+import logger
 from users_api import UsersApi
 from tg_user import User
 from telebot import types
@@ -19,6 +20,9 @@ if not( os.path.exists(base_way + "tg_token.txt") ):
 else:
     file = open(base_way + "tg_token.txt", 'r')
     TOKEN_TG = file.read() 
+    if TOKEN_TG == '':
+        logger.logger_add_critical('Не задан токен для Телеграм бота!')
+
     file.close()
     
 
@@ -32,10 +36,12 @@ def send_welcome(message):
     if not isinstance(us, User):
         user = User(username)
         users.add_user(user)
-        bot.reply_to(message, "Привет, твой аккаунт добавлен в нашу систему!)")
+        bot.reply_to(message, "Аккаунт добавлен в систему. Теперь нужен токен и сервер_id. \nОтправляй в формате /set_token [токен] и /set_server_id [сервер_id].")
     else:
-        bot.reply_to(message, "Привет, этот аккаунт у нас уже есть ;)")
+        bot.reply_to(message, "Ты уже добавлен. Если задал токен и сервер_id, можешь управлять сервером. Если нет, задавай в формате /set_token [токен]и /set_server_id [сервер_id].")
+        logger.logger_add_info('Пользователь ' + username + ' пытается повторно авторизоваться')
         activate(message)
+        
 
 
 @bot.message_handler(commands=['help'])
@@ -56,8 +62,9 @@ def set_token(message):
             users.update_user(us)
             bot.send_message(message.chat.id, "Токен задан")
             users.file_save()
+            logger.logger_add_info('Задан токен для пользователя ' + username)
     else:
-        bot.send_message(message.chat.id, "Не валидный токен, попробуй еще раз")
+        bot.send_message(message.chat.id, "Невалидный токен")
 
     activate(message)
 
@@ -72,10 +79,11 @@ def set_server_id(message):
         if isinstance(us, User):
             us.set_server_id(server_id)
             users.update_user(us)
-            bot.send_message(message.chat.id, "Сервер id задан")
+            bot.send_message(message.chat.id, "ID сервера задан")
             users.file_save()
+            logger.logger_add_info('Задан ID сервера для пользователя ' + username)
     else:
-        bot.send_message(message.chat.id, "Сервер id не задан, попробуй еще раз")
+        bot.send_message(message.chat.id, "Неправильный ID сервера")
 
     activate(message)
 
@@ -96,40 +104,63 @@ def echo_all(message):
                 if stringList[0] == "Старт":
                     exa.server_start()
                     bot.send_message(message.chat.id, "Сервер запущен")
+                    logger.logger_add_info('Пользователь ' + username + ' запросил запуск сервера')
                 elif stringList[0] == 'Стоп':
                     exa.server_stop()
                     bot.send_message(message.chat.id, "Сервер выключается")
+                    logger.logger_add_info('Пользователь ' + username + ' запросил выключение сервера')
                 elif stringList[0] == 'Рестарт':
                     exa.server_restart()
                     bot.send_message(message.chat.id, "Сервер перезапущен")
+                    logger.logger_add_info('Пользователь ' + username + ' запросил рестарт сервера')
                 elif stringList[0] == 'Статус':
                     out_command = exa.get_status()
                     bot.send_message(message.chat.id, "Статус сервера: " + out_command)
-                # elif stringList[0] == 'Логи':
-                    # exa.
-        
+                    logger.logger_add_info('Пользователь ' + username + ' запросил статус сервера')
+
+                if stringList[0] == 'Логи':
+                    out_command = logger.logger_get_last_messages(50)
+                    bot.send_message(message.chat.id, "50 последних логов окружния:")
+                    if len(out_command) > 4095:
+                        for x in range(0, len(out_command), 4095):
+                            bot.reply_to(message, text=out_command[x:x+4095])
+                    else:
+                        bot.reply_to(message, text=out_command)
+                    logger.logger_add_info('Пользователь ' + username + ' запросил логи')
             return
+
+    # elif len(stringList) == 2:
+    #     us = users.find(username)
+    #     if isinstance(us, User):
+    #         if us.isValid() :
+    #             exa = exa_api(us.get_token(), us.get_server_id())
+    #             out_command = ""
+
+
+    #             if stringList[0] == 'Логи' and stringList[1] == 'окружния':
+    #                 out_command = logger.logger_get_last_messages(50)
+    #                 print( len(out_command) )
+
     
-    bot.reply_to(message, f"Извини {user_first_name}, но такого я не заню :с")
+    # bot.reply_to(message, f"{user_first_name}, ты вообще кто?")
 
 
 def activate(message):
     username = str(message.chat.username)
     us = users.find(username)
     if isinstance(us, User):
-        # print( "main: activate ", us.isValid())
         if us.isValid() :
             markup = types.ReplyKeyboardMarkup()
             start = types.KeyboardButton('Старт')
             stop = types.KeyboardButton('Стоп')
             reboot = types.KeyboardButton('Рестарт')
             status = types.KeyboardButton('Статус')
-            # log_ser = types.KeyboardButton('Логи сервер')
-            # log_other = types.KeyboardButton('Логи окружния')
+            log_other = types.KeyboardButton('Логи')
             markup.row(start, stop)
-            markup.row(reboot, status)
-            # markup.row(reboot, status, log)
+            markup.row(reboot, status, log_other)
             bot.send_message(message.chat.id, "Все данные заполнены, теперь можно управлять", reply_markup=markup)
+
+            logger.logger_add_info('Активирован пользователь ' + username)
 
     
 
