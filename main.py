@@ -142,11 +142,7 @@ def echo_all(message):
     #                 print( len(out_command) )
 
     
-<<<<<<< HEAD
     # bot.reply_to(message, f"{user_first_name}, ты вообще кто?")
-=======
-    bot.reply_to(message, f"{user_first_name}, ты вообще кто?")
->>>>>>> main
 
 
 def activate(message):
