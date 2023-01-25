@@ -36,16 +36,10 @@ def send_welcome(message):
     if not isinstance(us, User):
         user = User(username)
         users.add_user(user)
-<<<<<<< HEAD
         bot.reply_to(message, "Аккаунт добавлен в систему. Теперь нужен токен и сервер_id. \nОтправляй в формате /set_token [токен] и /set_server_id [сервер_id].")
     else:
         bot.reply_to(message, "Ты уже добавлен. Если задал токен и сервер_id, можешь управлять сервером. Если нет, задавай в формате /set_token [токен]и /set_server_id [сервер_id].")
         logger.logger_add_info('Пользователь ' + username + ' пытается повторно авторизоваться')
-=======
-        bot.reply_to(message, "Аккаунт добавлен в систему. Теперь нужен токен. Отправляй в формате /set_token [токен]")
-    else:
-        bot.reply_to(message, "Ты уже добавлен. Если задал токен, можешь управлять сервером. Если нет, задавай в формате /set_token [токен].")
->>>>>>> main
         activate(message)
         
 
