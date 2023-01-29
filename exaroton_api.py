@@ -78,14 +78,11 @@ class exa_api:
         # print(response.text)
 
     def server_start(self):
-        print( "Start server" ) 
         self.mode_server('start');
 
     def server_stop(self):
-        print( "Stop server" ) 
         self.mode_server('stop');
 
     def server_restart(self):
-        print( "Restart server" ) 
         self.mode_server('restart');
 

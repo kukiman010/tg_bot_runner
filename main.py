@@ -46,8 +46,10 @@ def send_welcome(message):
 
 @bot.message_handler(commands=['help'])
 def info_o_users(message):
-    str = users.showAll()
-    bot.send_message(message.chat.id, str)
+    username = str(message.chat.username)
+    accaunts = users.showAll()
+    logger.logger_add_info('Пользователь ' + username + ' запросил данные ./user.txt')
+    bot.send_message(message.chat.id, accaunts)
 
 
 @bot.message_handler(commands=['set_token'])
@@ -120,7 +122,7 @@ def echo_all(message):
 
                 if stringList[0] == 'Логи':
                     out_command = logger.logger_get_last_messages(50)
-                    bot.send_message(message.chat.id, "50 последних логов окружния:")
+                    bot.send_message(message.chat.id, "50 последних логов окружения:")
                     if len(out_command) > 4095:
                         for x in range(0, len(out_command), 4095):
                             bot.reply_to(message, text=out_command[x:x+4095])

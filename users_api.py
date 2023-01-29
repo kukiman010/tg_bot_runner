@@ -71,7 +71,7 @@ class UsersApi:
                 self.USERS.append(user)
 
         file.close()
-        logger.logger_add_info('Данные из файл ' + self.file_users + ' были добавлены в систему')
+        logger.logger_add_info('Данные из файла ' + self.file_users + ' были добавлены в систему')
 
     
     def file_save(self):
